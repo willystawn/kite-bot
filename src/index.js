@@ -1,7 +1,7 @@
 // src/index.js
 
 const config = require('./config');
-const blockchainService = require('./services/blockchain');
+const BlockchainService = require('./services/blockchain');
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -12,22 +12,22 @@ const getRandomDelay = (rangeInMinutes) => {
     return minutes * 60 * 1000;
 };
 
-async function runFullCycle() {
-    console.log(`\n================== STARTING NEW CYCLE | ${new Date().toLocaleString()} ==================`);
+async function runFullCycleForService(service) {
+    console.log(`\n================== STARTING NEW CYCLE FOR ${service.address} | ${new Date().toLocaleString()} ==================`);
 
     const steps = [
-        blockchainService.step1_bridgeEthBaseToKite,
-        blockchainService.step2_bridgeEthKiteToBase,
-        blockchainService.step3_bridgeKiteTokenKiteToBase,
-        blockchainService.step4_bridgeKiteTokenBaseToKite,
-        blockchainService.step5_bridgeUsdtKiteToBase,
-        blockchainService.step6_bridgeUsdtBaseToKite,
+        service.step1_bridgeEthBaseToKite.bind(service),
+        service.step2_bridgeEthKiteToBase.bind(service),
+        service.step3_bridgeKiteTokenKiteToBase.bind(service),
+        service.step4_bridgeKiteTokenBaseToKite.bind(service),
+        service.step5_bridgeUsdtKiteToBase.bind(service),
+        service.step6_bridgeUsdtBaseToKite.bind(service),
     ];
 
     for (const step of steps) {
         const success = await step();
         if (!success) {
-            console.log("Cycle interrupted due to a failed step.");
+            console.log(`Cycle for ${service.address} interrupted due to a failed step.`);
             return;
         }
 
@@ -36,15 +36,19 @@ async function runFullCycle() {
         }
     }
 
-    console.log("\n========================= CYCLE COMPLETED =========================");
+    console.log(`\n========================= CYCLE COMPLETED FOR ${service.address} =========================`);
 }
 
 async function startAutomation() {
-    console.log("6-Step Automated Bridging Bot - Initializing...");
-    console.log(`Wallet Address: ${config.myAddress}`);
+    console.log(`Multi-Account Bridging Bot - Initializing with ${config.privateKeys.length} account(s)...`);
 
     while (true) {
-        await runFullCycle();
+        // Select a random account for this cycle
+        const randomKey = config.privateKeys[Math.floor(Math.random() * config.privateKeys.length)];
+        const service = new BlockchainService(randomKey);
+
+        await runFullCycleForService(service);
+        
         console.log(`\nCycle finished. Waiting for the next cycle to begin.`);
         await sleep(getRandomDelay(config.CYCLE_INTERVAL_RANGE_MINUTES));
     }

@@ -1,26 +1,26 @@
-# Multi-Network Bridging Bot
+# Advanced Multi-Account Bridging Bot
 
-This is an automated bot designed to perform a cycle of bridging transactions between the Base Sepolia and KITE test networks. It incorporates randomized amounts and delays to better simulate human behavior.
+This is an automated bot designed to perform a cycle of bridging transactions between the Base Sepolia and KITE test networks. It is built with advanced features for simulating human behavior, including multi-account support, randomized amounts, randomized delays, and randomized RPC user agents.
 
-## Features
+## Core Features
 
-The bot executes a 6-step cycle in a loop:
-1.  **Bridge ETH**: From Base Sepolia to KITE Testnet.
-2.  **Bridge ETH**: From KITE Testnet back to Base Sepolia.
-3.  **Bridge KITE Token**: From KITE Testnet to Base Sepolia.
-4.  **Bridge KITE Token**: From Base Sepolia back to KITE Testnet.
-5.  **Bridge USDT**: From KITE Testnet to Base Sepolia (includes an automatic `approve` transaction).
-6.  **Bridge USDT**: From Base Sepolia back to KITE Testnet.
-
-To avoid detection, all transaction amounts and delays between steps are randomized within a configurable range.
+-   **Multi-Account Support**: Manages multiple wallets from a single `.env` file.
+-   **Randomized Execution**: The bot randomly selects an account to run a full 6-step cycle, making its activity pattern less predictable.
+-   **Humanized Transactions**: All transaction amounts and delays between steps are randomized within a configurable range.
+-   **User-Agent Randomization**: When running in multi-account mode, each RPC request is sent with a different, randomized `User-Agent` header to mimic requests from various browsers and devices. This is a powerful anti-sybil measure.
+-   **Full Bridging Cycle**:
+    1.  Bridge ETH (Base -> KITE)
+    2.  Bridge ETH (KITE -> Base)
+    3.  Bridge KITE Token (KITE -> Base)
+    4.  Bridge KITE Token (Base -> KITE)
+    5.  Bridge USDT (KITE -> Base)
+    6.  Bridge USDT (Base -> KITE)
 
 ## Prerequisites
 
 -   [Node.js](https://nodejs.org/) (v18+ recommended).
--   An Ethereum wallet (e.g., MetaMask) with its Private Key.
--   Native token balances on both networks for gas fees:
-    -   ETH on Base Sepolia.
-    -   The native token on KITE Testnet.
+-   One or more Ethereum wallets with their Private Keys.
+-   Native token balances in **each wallet** on both networks for gas fees.
 
 ## Installation
 
@@ -42,33 +42,32 @@ To avoid detection, all transaction amounts and delays between steps are randomi
     ```
 
 4.  **Edit the `.env` file:**
-    Open the `.env` file and fill in your `PRIVATE_KEY` and RPC URLs.
+    Open the `.env` file and add your private keys to the `PRIVATE_KEYS` variable. **Separate multiple keys with a comma and no spaces.**
 
 ## **CRITICAL: Manual Approval Required**
 
-Before running the bot for the first time, you **MUST** perform **ONE manual `approve` transaction** on the **Base Sepolia** network. This is a one-time setup per wallet.
+Before running the bot, you **MUST** perform **ONE manual `approve` transaction** on the **Base Sepolia** network for **EACH ACCOUNT** you intend to use.
 
 1.  **Approve KITE Token (for Step 4):**
     -   **Network:** Base Sepolia
     -   **Token to Approve:** The KITE Token contract address on Base Sepolia.
     -   **Spender (Address to grant permission to):** `0xFB9a6AF5C014c32414b4a6e208a89904c6dAe266` (The KITE Token Bridge contract).
 
-> **Failure to perform this manual approval will cause Step 4 of the bot to fail every time.**
-> Note: Step 6 (bridging USDT from Base) does not require manual approval.
+> **Failure to perform this manual approval will cause Step 4 of the bot to fail for that specific account.**
 
 ## Running the Bot
 
-Once setup is complete, run the bot using the following command:
+Once setup is complete, run the bot using:
 
 ```bash
 npm start
 ```
 
-The bot will start its transaction cycle, logging each action to the console. To stop it, press `Ctrl + C`.
+The bot will randomly select an account, run a full cycle, and then wait for a random interval before starting the next cycle with another randomly selected account.
 
 ## Configuration
 
 You can customize the bot's behavior by editing `src/config.js`:
--   Modify the amount ranges for each token (`AMOUNT_..._RANGE`).
--   Adjust the delay ranges between steps (`BRIDGE_WAIT_TIME_RANGE_MINUTES`).
--   Change the delay range between full cycles (`CYCLE_INTERVAL_RANGE_MINUTES`).
+-   Modify the amount ranges (`AMOUNT_..._RANGE`).
+-   Adjust the delay ranges (`..._RANGE_MINUTES`).
+-   Add or remove `USER_AGENTS` for randomization in multi-account mode.
