@@ -20,7 +20,7 @@ module.exports = {
 
     // --- Humanization Settings ---
     AMOUNT_ETH_RANGE: { min: 0.001, max: 0.0015 },
-    AMOUNT_KITE_TOKEN_RANGE: { min: 1.0, max: 1.2 },
+    AMOUNT_KITE_TOKEN_RANGE: { min: 0.1, max: 0.3 },
     AMOUNT_USDT_RANGE: { min: 0.1, max: 0.15 },
     USDT_DECIMALS: 6,
 
