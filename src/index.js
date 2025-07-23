@@ -27,10 +27,11 @@ async function runFullCycleForService(service) {
     for (const step of steps) {
         const success = await step();
         if (!success) {
-            console.log(`Cycle for ${service.address} interrupted due to a failed step.`);
-            return;
+            // Jika sebuah langkah gagal, catat pesannya dan lanjutkan ke langkah berikutnya.
+            console.log(`   -> Step failed. Skipping to the next step.`);
         }
 
+        // Jeda akan tetap berjalan baik langkah sebelumnya berhasil atau gagal.
         if (step !== steps[steps.length - 1]) {
             await sleep(getRandomDelay(config.BRIDGE_WAIT_TIME_RANGE_MINUTES));
         }
