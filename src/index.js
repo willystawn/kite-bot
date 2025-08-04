@@ -13,31 +13,35 @@ const getRandomDelay = (rangeInMinutes) => {
 };
 
 async function runFullCycleForService(service) {
-    console.log(`\n================== STARTING NEW CYCLE FOR ${service.address} | ${new Date().toLocaleString()} ==================`);
+    console.log(`
+================== STARTING NEW CYCLE FOR ${service.address} | ${new Date().toLocaleString()} ==================`);
 
     const steps = [
-        service.step1_bridgeEthBaseToKite.bind(service),
-        service.step2_bridgeEthKiteToBase.bind(service),
-        service.step3_bridgeKiteTokenKiteToBase.bind(service),
-        service.step4_bridgeKiteTokenBaseToKite.bind(service),
-        service.step5_bridgeUsdtKiteToBase.bind(service),
-        service.step6_bridgeUsdtBaseToKite.bind(service),
+        // service.step1_bridgeEthBaseToKite.bind(service),
+        // service.step2_bridgeEthKiteToBase.bind(service),
+        // service.step3_bridgeKiteTokenKiteToBase.bind(service),
+        // service.step4_bridgeKiteTokenBaseToKite.bind(service),
+        // service.step5_bridgeUsdtKiteToBase.bind(service),
+        // service.step6_bridgeUsdtBaseToKite.bind(service),
+        // service.step7_swapUsdtToKite.bind(service),
+        service.step8_swapKiteToUsdt.bind(service),
     ];
 
     for (const step of steps) {
         const success = await step();
         if (!success) {
-            // Jika sebuah langkah gagal, catat pesannya dan lanjutkan ke langkah berikutnya.
+            // If a step fails, log the message and proceed to the next step.
             console.log(`   -> Step failed. Skipping to the next step.`);
         }
 
-        // Jeda akan tetap berjalan baik langkah sebelumnya berhasil atau gagal.
+        // The delay will still run whether the previous step succeeded or failed.
         if (step !== steps[steps.length - 1]) {
             await sleep(getRandomDelay(config.BRIDGE_WAIT_TIME_RANGE_MINUTES));
         }
     }
 
-    console.log(`\n========================= CYCLE COMPLETED FOR ${service.address} =========================`);
+    console.log(`
+========================= CYCLE COMPLETED FOR ${service.address} =========================`);
 }
 
 async function startAutomation() {
@@ -50,7 +54,8 @@ async function startAutomation() {
 
         await runFullCycleForService(service);
         
-        console.log(`\nCycle finished. Waiting for the next cycle to begin.`);
+        console.log(`
+Cycle finished. Waiting for the next cycle to begin.`);
         await sleep(getRandomDelay(config.CYCLE_INTERVAL_RANGE_MINUTES));
     }
 }

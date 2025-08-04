@@ -1,20 +1,22 @@
-# Advanced Multi-Account Bridging Bot
+# Advanced Multi-Account Bridging and Swapping Bot
 
-This is an automated bot designed to perform a cycle of bridging transactions between the Base Sepolia and KITE test networks. It is built with advanced features for simulating human behavior, including multi-account support, randomized amounts, randomized delays, and randomized RPC user agents.
+This is an automated bot designed to perform a cycle of bridging and swapping transactions between the Base Sepolia and KITE test networks. It is built with advanced features for simulating human behavior, including multi-account support, randomized amounts, randomized delays, and randomized RPC user agents.
 
 ## Core Features
 
 -   **Multi-Account Support**: Manages multiple wallets from a single `.env` file.
--   **Randomized Execution**: The bot randomly selects an account to run a full 6-step cycle, making its activity pattern less predictable.
+-   **Randomized Execution**: The bot randomly selects an account to run a full 8-step cycle, making its activity pattern less predictable.
 -   **Humanized Transactions**: All transaction amounts and delays between steps are randomized within a configurable range.
 -   **User-Agent Randomization**: When running in multi-account mode, each RPC request is sent with a different, randomized `User-Agent` header to mimic requests from various browsers and devices. This is a powerful anti-sybil measure.
--   **Full Bridging Cycle**:
+-   **Full Bridging and Swapping Cycle**:
     1.  Bridge ETH (Base -> KITE)
     2.  Bridge ETH (KITE -> Base)
     3.  Bridge KITE Token (KITE -> Base)
     4.  Bridge KITE Token (Base -> KITE)
     5.  Bridge USDT (KITE -> Base)
     6.  Bridge USDT (Base -> KITE)
+    7.  Swap USDT to KITE
+    8.  Swap KITE to USDT
 
 ## Prerequisites
 
@@ -27,7 +29,7 @@ This is an automated bot designed to perform a cycle of bridging transactions be
 1.  **Clone the repository:**
     ```bash
     git clone <your-repo-url>
-    cd auto-tx-bot
+    cd kite-bot
     ```
 
 2.  **Install dependencies:**
