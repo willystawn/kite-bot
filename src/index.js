@@ -17,13 +17,13 @@ async function runFullCycleForService(service) {
 ================== STARTING NEW CYCLE FOR ${service.address} | ${new Date().toLocaleString()} ==================`);
 
     const steps = [
-        // service.step1_bridgeEthBaseToKite.bind(service),
-        // service.step2_bridgeEthKiteToBase.bind(service),
-        // service.step3_bridgeKiteTokenKiteToBase.bind(service),
-        // service.step4_bridgeKiteTokenBaseToKite.bind(service),
-        // service.step5_bridgeUsdtKiteToBase.bind(service),
-        // service.step6_bridgeUsdtBaseToKite.bind(service),
-        // service.step7_swapUsdtToKite.bind(service),
+        service.step1_bridgeEthBaseToKite.bind(service),
+        service.step2_bridgeEthKiteToBase.bind(service),
+        service.step3_bridgeKiteTokenKiteToBase.bind(service),
+        service.step4_bridgeKiteTokenBaseToKite.bind(service),
+        service.step5_bridgeUsdtKiteToBase.bind(service),
+        service.step6_bridgeUsdtBaseToKite.bind(service),
+        service.step7_swapUsdtToKite.bind(service),
         service.step8_swapKiteToUsdt.bind(service),
     ];
 
